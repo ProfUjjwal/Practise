@@ -1,0 +1,325 @@
+---
+swagger: "2.0"
+info:
+  title: "Swagger RLog" 
+  version: "1.0.5"
+  description: "This is a server for Rlog-api"
+tags:
+- name: "User"
+  description: ""
+- name: "Account"
+  description: ""
+paths:
+  /user/login:
+    post:
+      tags :
+        - "User"
+      summary: "Login user after validation"
+      description: ""
+      parameters:
+        - name : "Authorization"
+          in : "header"
+          type: "string"
+          required: true
+          description: "Access Token"
+      responses: 
+        200:
+          description: "If user exists, it returns User Details after verification "
+          schema: 
+            $ref: "#/definitions/User"
+        201:
+          description: "If User doesn't exist, it gets created "
+          schema: 
+            $ref: "#/definitions/User"
+        401:
+          description: "Unauthorized User"
+          schema:
+            $ref: "#/definitions/Error"
+  /user/invites:
+    get:
+      tags :
+        - "User"
+      summary: "Invite user"
+      description: ""
+      parameters:
+        - name : "Authorization"
+          in : "header"
+          type: "string"
+          required: true
+          description: "Access Token"
+      responses: 
+        201:
+          description: "user invited"
+          schema:
+            $ref: "#/definitions/AccountDetails"
+        401:
+          description: "Unauthorized User"
+          schema:
+            $ref: "#/definitions/Error"
+  /account:
+    post:
+      tags :
+        - "Account"
+      summary: "create account"
+      descrption: "Id for account just created"
+      parameters: 
+        - name : "x-authenticated-token"
+          in : "headers"
+          types : "string"
+          required : true
+          description : "authorization"
+        - name : "Name"
+          in : "body"
+          required : true          
+          schema :
+            type: "object"
+            properties:
+              name:
+                type: "string"
+                example: "zopsmart"
+
+      responses :
+        201 :
+          description : "account created"
+          schema : 
+            $ref : "#/definitions/Account"
+        401:
+          description: "Unauthorized User"
+          schema:
+            $ref: "#/definitions/Error"
+        400:
+          description: "Bad_Request_Error"
+          schema:
+            $ref : "#/definitions/BadRequestError"
+  /account/{accountId}:
+    get:
+      tags :
+        - "Account"
+      summary : "get account"
+      description: "get account with particular account Id"
+      parameters: 
+        - name : "x-authenticated-token"
+          in : "headers"
+          types : "string"
+          required : true
+          description : "authorization"
+        - name : "accountId"
+          in : "path"
+          types : "string"
+          required : true
+          description : "Id of account"
+      responses:
+        200 :
+          description: "Found Account"
+          schema:
+            $ref : "#/definitions/AccountFound"
+        401:
+          description: "Unauthorized User"
+          schema:
+            $ref: "#/definitions/Error"
+        404:
+          description: "Data not found"
+          schema:
+            $ref: "#/definitions/NotFoundError"
+  /account/{accountID}:
+    put:
+      tags :
+        - "Account"
+      summary: "Update account"
+      description: "Update a particular account"
+      parameters: 
+        - name : "x-authenticated-token"
+          in : "headers"
+          types : "string"
+          required : true
+          description : "authorization"
+        - name : "accountId"
+          in : "path"
+          types : "string"
+          required : true
+          description : "Id of account"        
+        - name : "Name"
+          in : "body"
+          required : true          
+          schema :
+            type: "object"
+            properties:
+              name:
+                type: "string"
+                example: "Kroger"
+      responses:
+        200:
+          description: "Updated account"
+          schema:
+            $ref : "#/definitions/Account"
+        401:
+          description: "Unauthorized User"
+          schema:
+            $ref: "#/definitions/Error"
+        400:
+          description: "Bad_Request_Error"
+          schema:
+            $ref : "#/definitions/BadRequestError"
+  /account/{accountid}:
+    delete:
+      tags:
+        - "Account"
+      summary: "Delete account"
+      description: "Delete account for particular accountId"
+      parameters: 
+        - name : "x-authenticated-token"
+          in : "headers"
+          types : "string"
+          required : true
+          description : "authorization"
+        - name : "accountId"
+          in : "path"
+          types : "string"
+          required : true
+          description : "Id of account"
+      responses:
+        200:
+          description: "Deleted account"
+          schema:
+            $ref : "#/definitions/AccountDel"
+        401:
+          description: "Unauthorized User"
+          schema:
+            $ref: "#/definitions/Error"
+        404:
+          description: "Data not found"
+          schema:
+            $ref: "#/definitions/NotFoundError"      
+definitions:
+  User: 
+    type: "object"
+    properties:
+      data:
+        type: "object"
+        properties:
+          id :
+            example: "c604765d-6eb8-41df-b960-a43202c2f01d" 
+          name :
+            type: string
+            example: "User Name"
+          emailId:
+            type: string
+            example: "name.lastname@zopsmart.com"
+          image:
+            type: string  
+            example: "https://1h3.googleusercontent.com/a/AATXAJwS4j7VeVOtbysLHrjaD-xh99TRHu-kaHxmOC M=s96-c"             
+          createdOn:
+            type: string
+            example: "2022-05-23T08:26:10.0002"
+          updatedOn:
+            type: string
+            example: "2022-05-23T08:26:10.0002"
+          userAccountDetails: 
+            example: "[]"
+  Account:
+    type: "object"
+    properties:
+      data:
+        type: "object"
+        properties:
+          id:
+            example: "3b4a2a12-a132-41c7-8e8e-09bb60614310" 
+  AccountFound:
+    type: "object"
+    properties:
+      data:
+        type: "object"
+        properties:
+          id :
+            example: "62bd6664-fe6b-43a0-a754-37d02258ceb3"
+          name :
+            type: string
+            example: "ZopSmart"
+          createdBy:
+            type: string
+            example: "62bd6664-fe6b-43a0-a754-37d02258ceb3"       
+          createdOn:
+            type: string
+            example: "2022-05-23T08:26:10.0002"
+          updatedOn:
+            type: string
+            example: "2022-05-23T08:26:10.0002"
+  AccountDel:
+    type: object
+    properties:
+      data:
+        type: "object"
+        properties:
+          status:
+            example: 200
+          message:
+            example: "deleted succesfully"
+          
+  Error: 
+    type: "object"
+    properties:
+      errors:
+        type: "object"
+        properties:
+          code: 
+            example: "UNAUTHORIZED"
+          reason:
+            example: "Request was not authorized"
+          datetime: 
+            type: object
+            properties:
+              value:
+                example: "2022-05-24T09:29:13.177Z"
+              timezone:
+                example: "Asia/Calcutta"
+          rootCause:
+            example: "[]"
+  BadRequestError: 
+    type: "object"
+    properties:
+      errors:
+        type: "object"
+        properties:
+          code: 
+            example: "Bad_Request"
+          reason:
+            example: "Invalid data provided"
+          datetime: 
+            type: object
+            properties:
+              value:
+                example: "2022-05-24T09:29:13.177Z"
+              timezone:
+                example: "Asia/Calcutta"
+          rootCause:
+            example: "[]"
+  NotFoundError: 
+    type: "object"
+    properties:
+      errors:
+        type: "object"
+        properties:
+          code: 
+            example: "Not_Found"
+          reason:
+            example: "Data not found"
+          datetime: 
+            type: object
+            properties:
+              value:
+                example: "2022-05-24T09:29:13.177Z"
+              timezone:
+                example: "Asia/Calcutta"
+          rootCause:
+            example: "[]"
+  AccountDetails: 
+    type: "object"
+    properties:
+      data:
+        type: "object"
+        properties:
+          UserDetails: 
+            example: "[]"
+          AccountNameInvitation:
+            example: "[]"
+           
